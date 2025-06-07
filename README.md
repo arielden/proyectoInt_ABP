@@ -37,7 +37,8 @@ Asegurarse de tener instalado nodey npm (generalmente inncluído con node):
 ## Notas
 
 - En este proyecto se utilizó Tailwind CSS para los estilos.
-- Axios se utiliza para realizar solicitudes HTTP.
+- Axios se utiliza para realizar solicitudes HTTP
+- Se utiliza React Charts --> https://react-chartjs-2.js.org/
 
 ## Resultado según el avance de cada evidencia.
 
