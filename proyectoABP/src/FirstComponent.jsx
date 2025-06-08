@@ -3,6 +3,7 @@ import axios from 'axios';
 import ProductList from './ProductList';
 import StatsPanel from './StatsPanel';
 import SearchBar from './SearchBar';
+import Graphics from './Graphics';
 
 function FirstComponent() {
   const [products, setProducts] = useState([]);
@@ -12,6 +13,8 @@ function FirstComponent() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [orderBy, setOrderBy] = useState('');
   const [orderDir, setOrderDir] = useState('asc');
+  const [page, setPage] = useState(1);
+  const limit = 10;
   const themeRef = useRef(null); // Referencia para cmaiar el tema
 
   useEffect(() => {
@@ -21,16 +24,13 @@ function FirstComponent() {
       });
   }, []);
 
-  // Extract unique categories from products
   const categories = Array.from(new Set(products.map(p => p.category)));
 
-  // Filter by search term and selected category
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (selectedCategory === '' || product.category === selectedCategory)
   );
 
-  // Sort filtered products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (orderBy === 'price') {
       return orderDir === 'asc' ? a.price - b.price : b.price - a.price;
@@ -39,6 +39,14 @@ function FirstComponent() {
     }
     return 0;
   });
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, selectedCategory, orderBy, orderDir]);
+
+  const totalPages = Math.ceil(sortedProducts.length / limit);
+  const paginatedProducts = sortedProducts.slice((page - 1) * limit, page * limit);
 
   const handleSearchChange = (e) => {
     actualizaBusqueda(true);
@@ -51,6 +59,34 @@ function FirstComponent() {
     if (themeRef.current) {
       themeRef.current.classList.toggle('dark');
     }
+  };
+
+  // Export functionality
+  const triggerDownload = (url, filename) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportJSON = () => {
+    const blob = new Blob([JSON.stringify(sortedProducts, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, "productos.json");
+  };
+
+  const handleExportCSV = () => {
+    if (!sortedProducts.length) return;
+    const header = Object.keys(sortedProducts[0]).join(",");
+    const rows = sortedProducts.map(obj => Object.values(obj).map(val => `"${String(val).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = `${header}\n${rows}`;
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, "productos.csv");
   };
 
   return (
@@ -99,7 +135,31 @@ function FirstComponent() {
           <StatsPanel products={sortedProducts} />
         </div>
       )}
-      <ProductList products={sortedProducts} />
+      <div className="bg-blue-900 text-white rounded-md transition-all duration-300 p-4 mt-4">
+        <Graphics products={sortedProducts} />
+      </div>
+      <div className="flex gap-2 my-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50"
+        >
+          Página anterior
+        </button>
+        <span className="px-2">Página {page} de {totalPages}</span>
+        <button
+          disabled={page === totalPages || totalPages === 0}
+          onClick={() => setPage(page + 1)}
+          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50"
+        >
+          Página siguiente
+        </button>
+      </div>
+      <ProductList products={paginatedProducts} />
+      <div className="flex gap-2 my-4">
+        <button onClick={handleExportJSON} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Exportar JSON</button>
+        <button onClick={handleExportCSV} className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Exportar CSV</button>
+      </div>
     </div>
   );
 }
