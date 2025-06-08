@@ -14,6 +14,7 @@ function FirstComponent() {
   const [orderBy, setOrderBy] = useState('');
   const [orderDir, setOrderDir] = useState('asc');
   const [page, setPage] = useState(1);
+  const [showNotification, setShowNotification] = useState(false);
   const limit = 10;
   const themeRef = useRef(null); // Referencia para cmaiar el tema
 
@@ -40,7 +41,7 @@ function FirstComponent() {
     return 0;
   });
 
-  // Reset page to 1 when filters change
+  // Paginacion
   useEffect(() => {
     setPage(1);
   }, [searchTerm, selectedCategory, orderBy, orderDir]);
@@ -61,7 +62,7 @@ function FirstComponent() {
     }
   };
 
-  // Export functionality
+  // Funcionalidad de export a json y csv
   const triggerDownload = (url, filename) => {
     const link = document.createElement("a");
     link.href = url;
@@ -88,6 +89,16 @@ function FirstComponent() {
     const url = URL.createObjectURL(blob);
     triggerDownload(url, "productos.csv");
   };
+
+  useEffect(() => {
+    if (searchTerm && filteredProducts.length > 0) {
+      setShowNotification(true);
+      const timer = setTimeout(() => setShowNotification(false), 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowNotification(false);
+    }
+  }, [searchTerm, filteredProducts.length]);
 
   return (
     <div ref={themeRef} className="p-4">
@@ -160,6 +171,46 @@ function FirstComponent() {
         <button onClick={handleExportJSON} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Exportar JSON</button>
         <button onClick={handleExportCSV} className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Exportar CSV</button>
       </div>
+      {showNotification && (
+        <div className="fixed top-6 right-6 z-50 shadow-lg rounded-lg bg-white p-4 notification-box flex max-w-xl min-w-[320px]">
+          <div className="pr-2">
+            <svg
+              className="fill-current text-green-600"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+            >
+              <path
+                className="heroicon-ui"
+                d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-3.54-4.46a1 1 0 0 1 1.42-1.42 3 3 0 0 0 4.24 0 1 1 0 0 1 1.42 1.42 5 5 0 0 1-7.08 0zM9 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <div className="text-sm pb-2 font-semibold">
+              Resultados encontrados
+              <span className="float-right cursor-pointer" onClick={() => setShowNotification(false)}>
+                <svg
+                  className="fill-current text-gray-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                >
+                  <path
+                    className="heroicon-ui"
+                    d="M16.24 14.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 0 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12l2.83 2.83z"
+                  />
+                </svg>
+              </span>
+            </div>
+            <div className="text-sm text-gray-600 tracking-tight">
+              Se encontraron {filteredProducts.length} productos para "{searchTerm}".
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,20 +1,24 @@
-# Configuración e Instrucciones
+# Proyecto Integrador - ABP.
+Autor: Ariel Denaro
 
-Este proyecto es una aplicación Vite+React que sirve como base de las evidencias 1 y 2. A continuación, se detallan los pasos para configurar y ejecutar el proyecto localmente.
+## Configuración e Instrucciones
+
+Este repositorio contiene el proyecto ABP correspondiente a la materia Proyecto Integrador de la Tecnicatura Superior en Ciencia de Datos en Inteligencia Artificial
+Es una aplicación Vite + React que implementa una grilla de productos con filtrado, ordenamiento, paginación, exportación de datos, estadísticas y visualización gráfica.
 
 ## Requisitos
 
-Asegurarse de tener instalado nodey npm (generalmente inncluído con node):
+Tener instalado Node.js y npm:
 
 - [Node.js](https://nodejs.org/) (versión 14 o superior)
 
 ## Instalación
 
-1. Clonar este repositorio localmente.
-2. Navega hasta el directorio del proyecto:
+1. Clonar este repositorio en local.
+2. Navegar hasta el directorio del proyecto:
 
    ```bash
-   cd evidencias1y2
+   cd proyectoABP
    ```
 
 3. Instalar las dependencias:
@@ -23,44 +27,53 @@ Asegurarse de tener instalado nodey npm (generalmente inncluído con node):
    npm install
    ```
 
-## Ejecutar del server
+## Ejecución del servidor
 
-1. Inicializar el servidor en modo de desarrollo:
+1. Lanzar el servidor en modo desarrollo:
 
    ```bash
    npm run dev
    ```
 
-2. Abrir el navegador haciendo Crtl+click sobre el enlace proporcionado en la terminal (generalmente `http://localhost:5173`).
-
+2. Abrir el navegador y acceder al enlace que aparece en la terminal (`http://localhost:5173`).
 
 ## Notas
 
-- En este proyecto se utilizó Tailwind CSS para los estilos.
-- Axios se utiliza para realizar solicitudes HTTP
-- Se utiliza React Charts --> https://react-chartjs-2.js.org/
+- Se utiliza **Tailwind CSS** para los estilos.
+- Se utilizó **Axios** para manejar las solicitudes HTTP a la API.
+- PAra los gráficos se utiliza, **react-chartjs-2** y **Chart.js**
+- Se incluye paginación, filtrado por categoría, búsqueda, ordenamiento por precio y rating, y función de exportación de datos a JSON o CSV.
+- Tamibién se incluyó un diálogo de notificación mostrando la cantidad de resultados encontrados con éxito.
 
-## Resultado según el avance de cada evidencia.
+## Funciones principales
 
-1. Como resultado de la evidencia 1, se realizó la instalación de los módulos y una grilla de productos básica. ![Vista de Productos](evidencias1y2/screenshots/evidencia1_working_gridProducts.png)
+- **Búsqueda y filtrado:** Filtra productos por nombre y categoría.
+- **Ordenamiento:** Ordena los productos por precio o rating, ascendente o descendente.
+- **Paginación:** Visualiza los productos paginadosm 10 por página.
+- **Exportación:** Exporta los productos filtrados a archivos JSON o CSV.
+- **Estadísticas:** Muestra estadísticas dinámicas sobre los productos filtrados, incluyendo:
+  - Precio promedio, máximo y mínimo
+  - Cantidad de productos por categoría seleccionada
+  - Cantidad de productos con stock > 50 y rating > 4.5
+  - Precio promedio, producto más barato/caro y rating promedio por categoría
+- **Gráficos:**
+  - Barras: cantidad de productos por categoría
+  - Línea: evolución simulada de precios
+  - Torta: proporción de productos por stock
+- **Notificaciones:** Muestra notificaciones cuando se encuentran resultados en la búsqueda.
+- **Modo oscuro:** Permite cambiar entre tema claro y oscuro.
 
-2. Como resultado de la evidencia 2, se agregaron filtros dinámicos, estadísticas (que se calculan sobre los items filtrados), modularización en componentes y mejoras en la visualización. ![Vista de Productos](evidencias1y2/screenshots/evidencia2_working_filter.png)
+## Componentes
 
-2.1 En esta sección se implementaron estadísticas dinámicas que se calculan sobre los productos filtrados, se incluye:
+- **FirstComponent:** Componente principal que gestiona la lógica de búsqueda, filtrado, ordenamiento, paginación, exportación y notificaciones.
+- **StatsPanel:** Muestra estadísticas dinámicas calculadas sobre los productos filtrados.
+- **ProductList:** Muestra los productos filtrados en una grilla.
+- **ProductItem:** Muestra la información de un producto individual.
+- **SearchBar:** Barra de búsqueda.
+- **Graphics:** Visualización de gráficos con react-chartjs-2.
 
-- **Producto más caro:** Muestra el producto con el precio más alto.
-- **Producto más barato:** Muestra el producto con el precio más bajo.
-- **Cantidad de productos con títulos largos:** Cuenta los productos cuyo título tiene más de 20 caracteres.
-- **Descuento promedio:** Calcula el promedio de los descuentos de los productos filtrados.
-- **Mayor y menor descuento:** Identifica los productos con el mayor y menor porcentaje de descuento.
-- **Rango de precios:** Muestra el precio mínimo y máximo entre los productos filtrados.
+## Referencias
 
-2.2 El código fse modularizó en los siguientes componentes para mejorar su organización y facilitar reutilización:
-
-Se identifica una fracción del código que tiene una responsabilidad específica. Luego, se crea un nuevo archivo para ese componente y se mueve el código correspondiente
-
-Se pasan los props desde el componente principal para que el nuevo componente pueda recibir los datos necesarios. Por ejemplo, en el caso de `StatsPanel`, se le envían los productos filtrados como prop para que calcule y muestre las estadísticas.
-
-- **FirstComponent:** Componente principal que gestiona la búsqueda y el filtrado de productos.
-- **StatsPanel:** Se encarga dde mostrar las estadísticas dinámicas calculadas sobre los productos filtrados.
-- **ProductList:** Renderiza los productos filtrados en una grilla
+- API utilizada: [DummyJSON](https://dummyjson.com/)
+- Gráficos: [react-chartjs-2](https://react-chartjs-2.js.org/)
+- Estilos: [Tailwind CSS](https://tailwindcss.com/)

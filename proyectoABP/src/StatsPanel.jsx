@@ -3,20 +3,19 @@ import React from 'react';
 function StatsPanel({ products }) {
   if (!products || products.length === 0) return <p>No se encontraron productos</p>;
 
-  // Average Price
+  // Precio promedio
   const avgPrice = (products.reduce((sum, p) => sum + p.price, 0) / products.length).toFixed(2);
 
-  // Max and Min Price
+  // Precio máximo y mínimo
   const maxPrice = products.reduce((max, p) => p.price > max ? p.price : max, products[0].price);
   const minPrice = products.reduce((min, p) => p.price < min ? p.price : min, products[0].price);
 
-  // Qty of products by selected category (products array is already filtered by category in parent)
+  // Cantidad de productos por categoría seleccionada el array ya viene filtrado desde FirstComponent
   const qtyByCategory = products.length;
 
-  // Qty of products with stock > 50 and rating > 4.5
+  // Cantidad de productos con stock y ratings altos
   const qtyStockRating = products.filter(p => p.stock > 50 && p.rating > 4.5).length;
 
-  // Group by category using reduce
   const categoryStats = products.reduce((acc, p) => {
     if (!acc[p.category]) {
       acc[p.category] = {
